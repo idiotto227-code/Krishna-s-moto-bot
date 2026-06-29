@@ -1,0 +1,31 @@
+# ============================================================
+# NGINX + SSL — Meta требует HTTPS для webhook
+# ============================================================
+# 1. Установить nginx и certbot:
+#    apt install nginx certbot python3-certbot-nginx -y
+#
+# 2. Скопировать этот файл:
+#    nano /etc/nginx/sites-available/moto-bot
+#
+# 3. Заменить YOUR_DOMAIN на свой домен (нужен домен или subdomian!)
+#    Если домена нет — можно использовать ngrok для теста (см. README)
+#
+# 4. Включить сайт:
+#    ln -s /etc/nginx/sites-available/moto-bot /etc/nginx/sites-enabled/
+#    nginx -t && systemctl reload nginx
+#
+# 5. Получить SSL сертификат:
+#    certbot --nginx -d YOUR_DOMAIN
+# ============================================================
+
+server {
+    listen 80;
+    server_name YOUR_DOMAIN;
+
+    location / {
+        proxy_pass http://localhost:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+}
