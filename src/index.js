@@ -23,7 +23,10 @@ app.get("/webhook", (req, res) => {
 
 // Входящие сообщения от WhatsApp
 app.post("/webhook", async (req, res) => {
-  res.sendStatus(200); // Сразу отвечаем Meta (иначе повторит запрос)
+  console.log("🔥 WEBHOOK HIT");
+  console.log(JSON.stringify(req.body, null, 2));
+
+  res.sendStatus(200);
 
   try {
     const entry = req.body?.entry?.[0];
@@ -33,12 +36,12 @@ app.post("/webhook", async (req, res) => {
     if (!value?.messages) return;
 
     const msg = value.messages[0];
-    const from = msg.from; // Номер телефона отправителя
+    const from = msg.from;
     const phoneNumberId = value.metadata.phone_number_id;
 
     await handleMessage(msg, from, phoneNumberId);
   } catch (err) {
-    console.error("❌ Webhook error:", err.message);
+    console.error(err);
   }
 });
 
